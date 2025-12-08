@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: coachfit-postgres
+    environment:
+      POSTGRES_DB: coachfit
+      POSTGRES_USER: coachfit
+      POSTGRES_PASSWORD: coachfit
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
