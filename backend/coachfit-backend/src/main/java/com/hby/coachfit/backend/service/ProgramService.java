@@ -136,4 +136,68 @@ public class ProgramService {
     public List<Program> getProgramsByCoach(Long coachId) {
         return programRepository.findByCoachId(coachId);
     }
+
+    public List<ProgramSummaryResponse> getProgramSummariesByCoach(Long coachId) {
+        List<Program> programs = programRepository.findByCoachId(coachId);
+
+        List<ProgramSummaryResponse> result = new ArrayList<>();
+        for (Program p : programs) {
+            result.add(ProgramSummaryResponse.builder()
+                    .id(p.getId())
+                    .name(p.getName())
+                    .goal(p.getGoal())
+                    .level(p.getLevel())
+                    .build());
+        }
+        return result;
+    }
+
+    public ProgramResponse getProgramById(Long programId) {
+        Program program = programRepository.findById(programId)
+                .orElseThrow(() -> new EntityNotFoundException("Program not found with id " + programId));
+
+        List<ProgramDay> days = programDayRepository.findByProgramIdOrderByDayIndexAsc(programId);
+
+        List<ProgramDayResponse> dayResponses = new ArrayList<>();
+
+        for (ProgramDay day : days) {
+            List<ProgramDayExercise> exos = programDayExerciseRepository.findByProgramDayIdOrderByOrderIndexAsc(day.getId());
+            List<ProgramDayExerciseResponse> exoResponses = new ArrayList<>();
+
+            for (ProgramDayExercise pde : exos) {
+                Exercise ex = pde.getExercise();
+
+                exoResponses.add(ProgramDayExerciseResponse.builder()
+                        .id(pde.getId())
+                        .exerciseId(ex.getId())
+                        .exerciseName(ex.getName())
+                        .primaryMuscle(ex.getPrimaryMuscle())
+                        .orderIndex(pde.getOrderIndex())
+                        .sets(pde.getSets())
+                        .repsMin(pde.getRepsMin())
+                        .repsMax(pde.getRepsMax())
+                        .targetRpeMin(pde.getTargetRpeMin())
+                        .targetRpeMax(pde.getTargetRpeMax())
+                        .restSeconds(pde.getRestSeconds())
+                        .notes(pde.getNotes())
+                        .build());
+            }
+
+            dayResponses.add(ProgramDayResponse.builder()
+                    .id(day.getId())
+                    .dayIndex(day.getDayIndex())
+                    .name(day.getName())
+                    .exercises(exoResponses)
+                    .build());
+        }
+
+        return ProgramResponse.builder()
+                .id(program.getId())
+                .coachId(program.getCoach().getId())
+                .name(program.getName())
+                .goal(program.getGoal())
+                .level(program.getLevel())
+                .days(dayResponses)
+                .build();
+    }
 }

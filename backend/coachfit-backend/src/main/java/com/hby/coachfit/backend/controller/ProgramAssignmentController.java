@@ -4,6 +4,7 @@ package com.hby.coachfit.backend.controller;
 import com.hby.coachfit.backend.dto.AssignProgramRequest;
 import com.hby.coachfit.backend.dto.AssignedProgramResponse;
 import com.hby.coachfit.backend.service.ProgramAssignmentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class ProgramAssignmentController {
     }
 
     @PostMapping
-    public AssignedProgramResponse assignProgramToClient(@RequestBody AssignProgramRequest request) {
+    public AssignedProgramResponse assignProgramToClient(@Valid @RequestBody AssignProgramRequest request) {
         return assignmentService.assignProgram(request);
     }
 }

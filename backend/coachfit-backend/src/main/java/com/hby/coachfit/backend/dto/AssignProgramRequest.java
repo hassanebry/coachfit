@@ -1,5 +1,7 @@
 package com.hby.coachfit.backend.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -7,8 +9,16 @@ import java.time.LocalDate;
 @Data
 public class AssignProgramRequest {
 
+
+    @NotNull
     private Long programId;
+
+    @NotNull
     private Long clientId;
+
+    @NotNull
     private LocalDate startDate;
-    private Integer numberOfWeeks;   // ex: 4
+
+    @Min(1)
+    private Integer numberOfWeeks;
 }
