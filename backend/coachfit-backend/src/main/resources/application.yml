@@ -1,6 +1,12 @@
 server:
   port: 8080
 
+app:
+  security:
+    jwt:
+      secret: "change-me-very-long-secret-key-for-hmac"
+      expiration-seconds: 3600
+
 spring:
   application:
     name: coachfit-backend
